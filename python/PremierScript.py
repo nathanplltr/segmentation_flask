@@ -1,0 +1,8 @@
+print('Quel est votre nom ?')
+nom = input()
+print('Quel est votre prénom ?')
+prenom = input()
+print('Combien de lignes python avez-vous déjà programmé ?')
+experience = int(input())
+print('\n Bonjour '+prenom+' '+nom+' et bienvenue dans ce cours python.')
+print('Après cette séance, vous aurez écrit un minimum de '+str(experience+30)+' lignes python.')

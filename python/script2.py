@@ -1,0 +1,25 @@
+listeEntiers=[] #une liste vide
+listeEntiers=listeEntiers+[3]
+print(listeEntiers)
+print("---------")
+listeEntiers2=[2,21,'a',4,'5']
+listeEntiers.append(10)
+listeEntiers.extend(listeEntiers2)
+print(listeEntiers)
+print("---------")
+len(listeEntiers)
+print(listeEntiers[0])
+print(listeEntiers[3])
+print(listeEntiers[-2])
+print("---------")
+listeEntiers=listeEntiers[::-1]
+print(listeEntiers)
+print(listeEntiers[1::2])
+print(listeEntiers[0:2:1])
+print("---------")
+listeEntiers.remove(2)
+print(listeEntiers)
+print(5 in listeEntiers)
+print(10 in listeEntiers)
+print(listeEntiers.index(10))
+print("---------")
