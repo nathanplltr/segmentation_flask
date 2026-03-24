@@ -845,3 +845,156 @@ footer a:hover {
         justify-content: center;
     }
 }
+
+/* =========================
+   Labeling Page
+========================= */
+.label-page {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.img-zone {
+    position: relative;
+    display: inline-block;
+    cursor: crosshair;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    width: 100%;
+}
+
+.img-zone svg.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 12px;
+}
+
+.panel h6 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+}
+
+.coords {
+    font-size: 13px;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+    font-family: "DM Mono", monospace;
+}
+
+.coords b {
+    color: var(--text);
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+select,
+button {
+    font-size: 13px;
+    padding: 7px 10px;
+    border-radius: var(--r-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text);
+    cursor: pointer;
+}
+
+button {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+button:hover {
+    background: var(--text-muted);
+}
+
+button.secondary {
+    background: var(--bg-surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+button.secondary:hover {
+    background: var(--card-hover);
+}
+
+.badge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.badge {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: var(--r-md);
+    font-family: "DM Mono", monospace;
+}
+
+.badge.Voilier {
+    background: rgba(59, 130, 246, 0.15);
+    color: #1e40af;
+}
+
+.badge.Kayak {
+    background: rgba(34, 197, 94, 0.15);
+    color: #166534;
+}
+
+.badge.Moteur {
+    background: rgba(245, 158, 11, 0.15);
+    color: #92400e;
+}
+
+.badge .rm {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.badge .rm:hover {
+    opacity: 1;
+}
+
+.hint {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 6px;
+}
+
+.nav-btns {
+    display: flex;
+    gap: 8px;
+}
+
+@media (max-width: 700px) {
+    .label-page {
+        grid-template-columns: 1fr;
+    }
+}

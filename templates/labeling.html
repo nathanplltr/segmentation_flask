@@ -1,40 +1,148 @@
 {% extends "base.html" %}
 {% block content %}
-<div>
+
+<div class="label-page">
     <div>
-        <img id="target" src="/static/uploads/{{images[0]}}" onclick="mark(event)">
+        <div class="flex justify-between mb-2">
+            <span class="text-sm text-muted">Image : <b id="imgName">{{ images[currentIndex|default(0)] }}</b></span>
+            <div class="flex gap-2">
+                <button class="btn btn-ghost" onclick="navigate(-1)">← Précédente</button>
+                <button class="btn btn-ghost" onclick="navigate(1)">Suivante →</button>
+            </div>
+        </div>
+        <div class="img-zone" id="imgZone">
+            <img id="target" src="/static/uploads/{{ images[0] }}" alt="image à étiqueter" />
+            <svg class="overlay" id="overlay"></svg>
+        </div>
     </div>
 
     <div>
-        <h5>Étiqueter une Anomalie</h5>
-        <p>X: <span id="x">-</span> | Y: <span id="y">-</span></p>
-        <select id="type">
-            <option>Voilier</option>
-            <option>Kayak</option>
-            <option>Moteur</option>
-        </select>
-        <button onclick="save()">Enregistrer l'étiquette</button>
+        <div class="panel">
+            <h6>Point sélectionné</h6>
+            <div class="coords">
+                Pixel : <b id="px">—</b><br>
+                Normalisé : <b id="pn">—</b>
+            </div>
+            <div class="flex gap-2 mb-2">
+                <select id="type">
+                    <option>Voilier</option>
+                    <option>Kayak</option>
+                    <option>Moteur</option>
+                </select>
+                <button class="btn btn-solid" onclick="addLabel()">+ Ajouter</button>
+            </div>
+            <div class="hint">Cliquez sur l'image pour sélectionner un point.</div>
+        </div>
+
+        <div class="panel">
+            <h6>Étiquettes (<span id="count">0</span>)</h6>
+            <div class="badge-list" id="badgeList">
+                <span class="text-xs text-muted">Aucune étiquette.</span>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button class="btn btn-ghost flex-1" onclick="saveToServer()">💾 Enregistrer</button>
+                <button class="btn btn-ghost" onclick="exportJSON()">↓ JSON</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    let curX, curY;
+    const IMAGES = {{ images | tojson }};
+    let currentIdx = 0, curX = null, curY = null, labels = [];
+    const colorMap = { Voilier: '#3B82F6', Kayak: '#22C55E', Moteur: '#F59E0B' };
 
-    function mark(e) {
-        const r = e.target.getBoundingClientRect();
+    function navigate(dir) {
+        currentIdx = (currentIdx + dir + IMAGES.length) % IMAGES.length;
+        const img = document.getElementById('target');
+        img.src = '/static/uploads/' + IMAGES[currentIdx];
+        document.getElementById('imgName').textContent = IMAGES[currentIdx];
+        curX = curY = null;
+        document.getElementById('px').textContent = '—';
+        document.getElementById('pn').textContent = '—';
+        refreshOverlay();
+    }
+
+    document.getElementById('imgZone').addEventListener('click', function (e) {
+        const img = document.getElementById('target');
+        const r = img.getBoundingClientRect();
         curX = Math.round(e.clientX - r.left);
         curY = Math.round(e.clientY - r.top);
-        document.getElementById('x').innerText = curX;
-        document.getElementById('y').innerText = curY;
+        const nx = parseFloat((curX / r.width).toFixed(4));
+        const ny = parseFloat((curY / r.height).toFixed(4));
+        document.getElementById('px').textContent = curX + ', ' + curY;
+        document.getElementById('pn').textContent = nx + ', ' + ny;
+        refreshOverlay();
+    });
+
+    function addLabel() {
+        if (curX === null) return alert('Cliquez d\'abord sur un point de l\'image.');
+        const img = document.getElementById('target');
+        const r = img.getBoundingClientRect();
+        const type = document.getElementById('type').value;
+        labels.push({
+            id: Date.now(),
+            image: IMAGES[currentIdx],
+            x: curX, y: curY,
+            nx: parseFloat((curX / r.width).toFixed(4)),
+            ny: parseFloat((curY / r.height).toFixed(4)),
+            type
+        });
+        renderBadges();
+        refreshOverlay();
     }
 
-    function save() {
-        const img = document.getElementById('target').src.split('/').pop();
-        fetch('/save_label', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: img, x: curX, y: curY, type: document.getElementById('type').value })
-        }).then(() => alert("Étiquette sauvegardée dans labels.json !"));
+    function renderBadges() {
+        const bl = document.getElementById('badgeList');
+        const forCurrent = labels.filter(l => l.image === IMAGES[currentIdx]);
+        const others = labels.length - forCurrent.length;
+        document.getElementById('count').textContent = labels.length;
+        if (!labels.length) {
+            bl.innerHTML = '<span class="text-xs text-muted">Aucune étiquette.</span>';
+            return;
+        }
+        bl.innerHTML = forCurrent.map(l =>
+            `<div class="badge ${l.type}"><span>${l.type} (${l.nx}, ${l.ny})</span><span class="rm" onclick="removeLabel(${l.id})">×</span></div>`
+        ).join('') + (others > 0 ? `<div class="text-xs text-muted mt-1">+ ${others} étiquette(s) sur d'autres images</div>` : '');
+    }
+
+    function removeLabel(id) {
+        labels = labels.filter(l => l.id !== id);
+        renderBadges();
+        refreshOverlay();
+    }
+
+    function refreshOverlay() {
+        const img = document.getElementById('target');
+        const r = img.getBoundingClientRect();
+        const svg = document.getElementById('overlay');
+        let html = '';
+        labels.filter(l => l.image === IMAGES[currentIdx]).forEach(l => {
+            const c = colorMap[l.type] || '#fff';
+            const px = (l.nx * 100).toFixed(2);
+            const py = (l.ny * 100).toFixed(2);
+            html += `<circle cx="${px}%" cy="${py}%" r="7" fill="${c}" opacity="0.85" stroke="white" stroke-width="1.5"/>
+                     <text x="${px}%" y="${py}%" dy="-10" text-anchor="middle" font-size="10" fill="white" font-family="monospace">${l.type}</text>`;
+        });
+        if (curX !== null) {
+            const px = (curX / r.width * 100).toFixed(2);
+            const py = (curY / r.height * 100).toFixed(2);
+            html += `<line x1="${px}%" y1="0" x2="${px}%" y2="100%" stroke="white" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.6"/>
+                     <line x1="0" y1="${py}%" x2="100%" y2="${py}%" stroke="white" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.6"/>
+                     <circle cx="${px}%" cy="${py}%" r="5" fill="none" stroke="white" stroke-width="1.5"/>`;
+        }
+        svg.innerHTML = html;
+    }
+
+    function saveToServer() {
+        fetch('/save_label', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ labels }) })
+            .then(r => r.json()).then(d => alert('✓ ' + labels.length + ' étiquette(s) sauvegardée(s)')).catch(() => alert('Erreur lors de la sauvegarde.'));
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(labels, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'labels.json'; a.click();
     }
 </script>
+
 {% endblock %}
