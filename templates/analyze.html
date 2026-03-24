@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <h3>Résultats</h3>
+    <form method="POST">
+        <select name="img">
+            {% for i in images %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Analyser</button>
+    </form>
+
+    {% if selected %}
+    <div>
+        <div>
+            <h6>Originale</h6>
+            <img src="/static/uploads/{{ selected }}">
+        </div>
+        <div>
+            <h6>Masque (Segmentation)</h6>
+            <img src="/static/processed/mask_{{ selected }}">
+        </div>
+        <div>
+            <h6>Régions Détectées</h6>
+            <img src="/static/processed/reg_{{ selected }}">
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

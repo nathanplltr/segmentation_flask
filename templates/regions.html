@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <h2>Analyse Technique des Régions</h2>
+    <p>Cette page permet de visualiser et d’analyser les différentes régions détectées sur vos images, afin d’identifier
+        facilement les anomalies comme les bateaux, paddles, kayaks ou objets gonflables.</p>
+    <hr>
+
+    {% if selected %}
+    <div>
+        <div>
+            <h6>Analyse des Régions (#)</h6>
+            <img src="/static/processed/reg_{{ selected }}">
+        </div>
+
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Surface (px²)</th>
+                        <th>Forme (W/H)</th>
+                        <th>Label Proposé IA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in regions %}
+                    <tr>
+                        <td>#{{ reg.id }}</td>
+                        <td>{{ reg.area }} px²</td>
+                        <td>{{ reg.ratio }}</td>
+                        <td>
+                            {% if reg.label == "Kayak/Paddle" %}
+                            🛶 {{ reg.label }}
+                            {% else %}
+                            🚢 {{ reg.label }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>
+                Note : Le label est proposé selon le ratio. Un ratio élevé (&gt; 2.5) indique souvent un objet long et
+                fin comme un Kayak.
+            </p>
+        </div>
+    </div>
+    {% else %}
+    <div>
+        <p>Aucune donnée à afficher.</p>
+        <p>Allez d'abord dans l'onglet analyze pour analyser une image.</p>
+        <a href="/analyze">Aller à l'analyse</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

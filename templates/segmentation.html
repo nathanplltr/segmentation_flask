@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm">
+            <h5 class="mb-3">⚙️ Paramètres d'Analyse</h5>
+            <form method="POST">
+                <label class="form-label">Sélectionner une image MFDC :</label>
+                <select name="img" class="form-select mb-3">
+                    {% for image in images %}
+                    <option value="{{ image }}" {% if image==selected_img %}selected{% endif %}>{{ image }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary w-100">Lancer la Segmentation</button>
+            </form>
+        </div>
+
+        <div class="card p-3 mt-3 bg-light">
+            <small><strong>Verrous corrigés :</strong><br>
+                - Luminosité (CLAHE)<br>
+                - Bruit (Ouverture Morphologique)</small>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card p-3 shadow-sm text-center">
+            <div class="row">
+                <div class="col-6 border-end">
+                    <p class="text-muted">Image Originale</p>
+                    {% if selected_img %}
+                    <img src="/static/uploads/{{ selected_img }}" class="img-fluid rounded">
+                    {% else %}
+                    <div class="py-5">Aucune image</div>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    <p class="text-muted">Segmentation (K-Means)</p>
+                    {% if processed_img %}
+                    <img src="/static/processed/{{ processed_img }}" class="img-fluid rounded border border-success">
+                    {% else %}
+                    <div class="py-5">En attente...</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

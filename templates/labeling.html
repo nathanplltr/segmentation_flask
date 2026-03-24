@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <div>
+        <img id="target" src="/static/uploads/{{images[0]}}" onclick="mark(event)">
+    </div>
+
+    <div>
+        <h5>Étiqueter une Anomalie</h5>
+        <p>X: <span id="x">-</span> | Y: <span id="y">-</span></p>
+        <select id="type">
+            <option>Voilier</option>
+            <option>Kayak</option>
+            <option>Moteur</option>
+        </select>
+        <button onclick="save()">Enregistrer l'étiquette</button>
+    </div>
+</div>
+
+<script>
+    let curX, curY;
+
+    function mark(e) {
+        const r = e.target.getBoundingClientRect();
+        curX = Math.round(e.clientX - r.left);
+        curY = Math.round(e.clientY - r.top);
+        document.getElementById('x').innerText = curX;
+        document.getElementById('y').innerText = curY;
+    }
+
+    function save() {
+        const img = document.getElementById('target').src.split('/').pop();
+        fetch('/save_label', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: img, x: curX, y: curY, type: document.getElementById('type').value })
+        }).then(() => alert("Étiquette sauvegardée dans labels.json !"));
+    }
+</script>
+{% endblock %}

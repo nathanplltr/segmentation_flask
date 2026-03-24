@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Ma page{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Segmentation et Analyse</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Accueil</a>
+            <a href="{{ url_for('analyze') }}">Analyse</a>
+            <a href="{{ url_for('regions') }}">Analyse des régions</a>
+            <a href="{{ url_for('labeling') }}">Annotation Manuelle</a>
+            <a href="{{ url_for('verrous') }}">Verrous</a>
+            <a href="{{ url_for('docs') }}">Documentation</a>
+        </nav>
+    </header>
+
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        &copy; 2026 Nathan & Ayden. Tous droits réservés.
+    </footer>
+</body>
+
+</html>

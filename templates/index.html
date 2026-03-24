@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-5 text-center shadow">
+    <h1 class="display-4">Segmentation et Analyse de Données Visuelles</h1>
+    <p class="lead mt-3">Ce site permet de visualiser, segmenter et étiqueter vos images facilement, avec des
+        outils pour corriger la luminosité, détecter les anomalies et enregistrer vos annotations pour d’autres images.
+    </p>
+    <hr>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="{{ url_for('analyze') }}" class="btn btn-primary btn-lg">Démarrer l'Analyse</a>
+        <a href="{{ url_for('docs') }}" class="btn btn-outline-secondary btn-lg">Documentation</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <h1>Documentation</h1>
+
+    <h2>Objectif du site</h2>
+    <p>Ce site permet de visualiser, segmenter et étiqueter vos images facilement. Il combine des méthodes de clustering
+        classiques et des approches basées sur Auto-encodeur/CNN pour traiter vos données visuelles.</p>
+
+    <h2>Navigation</h2>
+    <p>Vous pouvez accéder aux différentes fonctionnalités depuis le menu principal :</p>
+    <ul>
+        <li><strong>Accueil :</strong> Présentation du site et des objectifs.</li>
+        <li><strong>Analyse :</strong> Sélection et traitement des images pour la segmentation.</li>
+        <li><strong>Documentation :</strong> Cette page pour expliquer l’utilisation et les méthodes appliquées.</li>
+    </ul>
+
+    <h2>Étapes de l'analyse</h2>
+    <ol>
+        <li><strong>Sélection de l'image :</strong> Choisir une image MFDC dans la liste disponible.</li>
+        <li><strong>Lancement de la segmentation :</strong> Cliquer sur "Analyser" pour générer le masque et les régions
+            détectées.</li>
+        <li><strong>analyze :</strong> Comparer l'image originale, le masque généré et les régions détectées.</li>
+        <li><strong>Correction et annotation :</strong> Les anomalies peuvent être corrigées et les annotations
+            appliquées sur d’autres images.</li>
+    </ol>
+
+    <h2>Verrous et corrections</h2>
+    <p>La segmentation peut rencontrer certains verrous :</p>
+    <ul>
+        <li><strong>Luminosité :</strong> Les images trop claires ou trop sombres sont corrigées automatiquement.</li>
+        <li><strong>Bruit et forme des objets :</strong> Une ouverture morphologique et des filtres permettent de mieux
+            isoler les objets fins ou partiellement cachés.</li>
+        <li><strong>Anomalies :</strong> Les éléments atypiques sont détectés et peuvent être corrigés via l’interface.
+        </li>
+    </ul>
+
+    <h2>Conseils d'utilisation</h2>
+    <ul>
+        <li>Utilisez des images de taille raisonnable pour accélérer le traitement.</li>
+        <li>Appliquez les corrections automatiques avant de lancer la segmentation si nécessaire.</li>
+        <li>Vérifiez toujours les régions détectées et ajustez manuellement si des anomalies subsistent.</li>
+    </ul>
+
+    <h2>Contact et support</h2>
+    <p>Pour toute question ou suggestion, veuillez contacter l’administrateur du site.</p>
+</div>
+{% endblock %}
