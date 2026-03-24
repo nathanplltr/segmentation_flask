@@ -48,7 +48,7 @@
 </div>
 
 <script>
-    const IMAGES = {{ images | tojson }};
+    const IMAGES = JSON.parse('{{ images | tojson | safe }}');
     let currentIdx = 0, curX = null, curY = null, labels = [];
     const colorMap = { Voilier: '#3B82F6', Kayak: '#22C55E', Moteur: '#F59E0B' };
 
