@@ -1,0 +1,7 @@
+cv2
+numpy
+flask
+# opencv-python
+# markdown
+# tensorflow
+# scikit-learn
