@@ -2,7 +2,7 @@
 {% block content %}
 <div>
     <h2>Analyse Technique des Régions</h2>
-    <p>Cette page permet de visualiser et d’analyser les différentes régions détectées sur vos images, afin d’identifier
+    <p>Cette page permet de visualiser et d'analyser les différentes régions détectées sur vos images, afin d'identifier
         facilement les anomalies comme les bateaux, paddles, kayaks ou objets gonflables.</p>
     <hr>
 
@@ -32,6 +32,12 @@
                         <td>
                             {% if reg.label == "Kayak/Paddle" %}
                             🛶 {{ reg.label }}
+                            {% elif reg.label == "Bateau moteur" %}
+                            🚤 {{ reg.label }}
+                            {% elif reg.label == "Voilier" %}
+                            ⛵ {{ reg.label }}
+                            {% elif reg.label == "Bouée" %}
+                            🔴 {{ reg.label }}
                             {% else %}
                             🚢 {{ reg.label }}
                             {% endif %}

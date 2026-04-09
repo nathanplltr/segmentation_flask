@@ -4,5 +4,33 @@
     <h2 class="text-primary">Verrous et Solutions</h2>
     <hr>
     <div class="row mt-3">
+        <div class="col-12">
+
+            <h5>Modèle de détection inadapté</h5>
+            <p>Dans un premier temps, notre pipeline utilisait le modèle générique YOLOv8n entraîné sur le dataset COCO,
+                qui ne reconnaît aucun objet maritime spécifique (bateaux, voiliers, bouées). La segmentation ne
+                produisait donc aucun résultat exploitable, comme en témoigne le masque quasi entièrement noir visible
+                sur les images traitées.</p>
+
+            <h5 class="mt-3">Filtre de détection trop agressif</h5>
+            <p>Nous avons également identifié un problème dans le pipeline : la fonction chargée d'éliminer la
+                végétation parasite rejetait aussi les zones d'eau de couleur turquoise ou verte, supprimant ainsi les
+                rares détections pertinentes.</p>
+
+            <h5 class="mt-3">Entraînement d'un modèle personnalisé</h5>
+            <p>Pour corriger cela, nous avons entraîné un modèle personnalisé sur la plateforme Roboflow, à partir d'un
+                dataset de plus de 10 000 images annotées représentant des bateaux à moteur, voiliers, kayaks et bouées
+                en milieu maritime. Après 10 heures d'entraînement, le modèle YOLOv11 obtenu affiche des performances
+                satisfaisantes : <strong>83,4 % de mAP</strong>, <strong>87,5 % de précision</strong> et <strong>76,5 %
+                    de rappel</strong>.</p>
+
+            <h5 class="mt-3">Verrou actuel — déploiement du modèle</h5>
+            <p>Cependant, l'intégration de ce modèle dans notre application s'est heurtée à un blocage : le déploiement
+                via Roboflow nécessite un abonnement payant pour accéder au fichier de poids entraîné
+                (<code>best.pt</code>). Sans ce fichier, il nous est impossible de faire tourner notre modèle en local
+                dans l'application Flask. Ce point constitue le principal verrou actuel du projet.</p>
+
+        </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}

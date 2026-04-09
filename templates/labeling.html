@@ -28,6 +28,7 @@
                     <option>Voilier</option>
                     <option>Kayak</option>
                     <option>Moteur</option>
+                    <option>Bouée</option>
                 </select>
                 <button class="btn btn-solid" onclick="addLabel()">+ Ajouter</button>
             </div>
@@ -50,7 +51,7 @@
 <script>
     const IMAGES = JSON.parse('{{ images | tojson | safe }}');
     let currentIdx = 0, curX = null, curY = null, labels = [];
-    const colorMap = { Voilier: '#3B82F6', Kayak: '#22C55E', Moteur: '#F59E0B' };
+    const colorMap = { Voilier: '#3B82F6', Kayak: '#22C55E', Moteur: '#F59E0B', Bouée: '#EF4444' };
 
     function navigate(dir) {
         currentIdx = (currentIdx + dir + IMAGES.length) % IMAGES.length;

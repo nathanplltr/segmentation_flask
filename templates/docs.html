@@ -1,48 +1,61 @@
 {% extends "base.html" %}
 {% block content %}
-<div>
-    <h1>Documentation</h1>
+<div class="card p-4">
+    <h2 class="text-primary">Documentation</h2>
+    <hr>
+    <div class="row mt-3">
+        <div class="col-12">
 
-    <h2>Objectif du site</h2>
-    <p>Ce site permet de visualiser, segmenter et étiqueter vos images facilement. Il combine des méthodes de clustering
-        classiques et des approches basées sur Auto-encodeur/CNN pour traiter vos données visuelles.</p>
+            <p class="lead">Ce site permet de détecter automatiquement des objets maritimes (bateaux, voiliers, kayaks,
+                bouées) sur des images de caméra de surveillance. Voici comment il fonctionne et comment l'utiliser.</p>
 
-    <h2>Navigation</h2>
-    <p>Vous pouvez accéder aux différentes fonctionnalités depuis le menu principal :</p>
-    <ul>
-        <li><strong>Accueil :</strong> Présentation du site et des objectifs.</li>
-        <li><strong>Analyse :</strong> Sélection et traitement des images pour la segmentation.</li>
-        <li><strong>Documentation :</strong> Cette page pour expliquer l’utilisation et les méthodes appliquées.</li>
-    </ul>
+            <hr class="my-4">
 
-    <h2>Étapes de l'analyse</h2>
-    <ol>
-        <li><strong>Sélection de l'image :</strong> Choisir une image MFDC dans la liste disponible.</li>
-        <li><strong>Lancement de la segmentation :</strong> Cliquer sur "Analyser" pour générer le masque et les régions
-            détectées.</li>
-        <li><strong>analyze :</strong> Comparer l'image originale, le masque généré et les régions détectées.</li>
-        <li><strong>Correction et annotation :</strong> Les anomalies peuvent être corrigées et les annotations
-            appliquées sur d’autres images.</li>
-    </ol>
+            <h4>🏠 Accueil</h4>
+            <p>La page d'accueil présente le projet. C'est le point de départ du site.</p>
 
-    <h2>Verrous et corrections</h2>
-    <p>La segmentation peut rencontrer certains verrous :</p>
-    <ul>
-        <li><strong>Luminosité :</strong> Les images trop claires ou trop sombres sont corrigées automatiquement.</li>
-        <li><strong>Bruit et forme des objets :</strong> Une ouverture morphologique et des filtres permettent de mieux
-            isoler les objets fins ou partiellement cachés.</li>
-        <li><strong>Anomalies :</strong> Les éléments atypiques sont détectés et peuvent être corrigés via l’interface.
-        </li>
-    </ul>
+            <hr class="my-4">
 
-    <h2>Conseils d'utilisation</h2>
-    <ul>
-        <li>Utilisez des images de taille raisonnable pour accélérer le traitement.</li>
-        <li>Appliquez les corrections automatiques avant de lancer la segmentation si nécessaire.</li>
-        <li>Vérifiez toujours les régions détectées et ajustez manuellement si des anomalies subsistent.</li>
-    </ul>
+            <h4>🔍 Analyse</h4>
+            <p>C'est la page principale. Sélectionnez une image déjà présente sur le serveur, puis cliquez sur le bouton
+                d'analyse. Le site traite alors l'image et affiche trois résultats : l'image originale, le masque de
+                segmentation (la zone eau isolée), et l'image annotée avec les objets détectés encadrés et étiquetés.
+            </p>
 
-    <h2>Contact et support</h2>
-    <p>Pour toute question ou suggestion, veuillez contacter l’administrateur du site.</p>
+            <hr class="my-4">
+
+            <h4>📊 Analyse des régions</h4>
+            <p>Cette page affiche le détail de chaque objet détecté lors de la dernière analyse : son type, son score de
+                confiance, et sa position dans l'image. Elle se met à jour automatiquement après chaque nouvelle
+                analyse.</p>
+
+            <hr class="my-4">
+
+            <h4>✏️ Annotation manuelle</h4>
+            <p>Cette page vous permet de sélectionner une image et de dessiner manuellement des zones pour les annoter.
+                Utile pour corriger ou compléter une détection automatique qui aurait manqué un objet.</p>
+
+            <hr class="my-4">
+
+            <h4>🔒 Verrous</h4>
+            <p>Cette page présente les difficultés rencontrées pendant le développement et les limites actuelles de
+                l'application.</p>
+
+            <hr class="my-4">
+
+            <h4>⚙️ Comment ça marche ?</h4>
+            <p>Le site est construit avec <strong>Flask</strong>, un framework Python léger pour créer des applications
+                web. Quand vous lancez une analyse, Flask envoie l'image à un script de traitement
+                (<code>segmentation_logic.py</code>) qui utilise un modèle d'intelligence artificielle appelé
+                <strong>YOLOv8</strong> (version légère <code>yolov8n</code>).</p>
+            <p>Ce modèle analyse l'image et tente de localiser des objets maritimes parmi quatre catégories :
+                <strong>voilier</strong>, <strong>kayak/paddle</strong>, <strong>bateau à moteur</strong> et
+                <strong>bouée</strong>. Un filtre supplémentaire est appliqué pour ignorer les zones vertes (végétation,
+                herbe) qui pourraient être confondues avec des objets sur l'eau. Seules les détections dépassant
+                <strong>50 % de confiance</strong> sont affichées.</p>
+            <p>Les résultats sont ensuite renvoyés au site et affichés directement dans votre navigateur.</p>
+
+        </div>
+    </div>
 </div>
 {% endblock %}
