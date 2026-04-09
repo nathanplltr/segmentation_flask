@@ -7,28 +7,67 @@
         <div class="col-12">
 
             <h5>Modèle de détection inadapté</h5>
-            <p>Dans un premier temps, notre pipeline utilisait le modèle générique YOLOv8n entraîné sur le dataset COCO,
+            <p>
+                Dans un premier temps, notre pipeline utilisait le modèle générique YOLOv8n entraîné sur le dataset
+                COCO,
                 qui ne reconnaît aucun objet maritime spécifique (bateaux, voiliers, bouées). La segmentation ne
                 produisait donc aucun résultat exploitable, comme en témoigne le masque quasi entièrement noir visible
-                sur les images traitées.</p>
+                sur les images traitées.
+            </p>
 
-            <h5 class="mt-3">Filtre de détection trop agressif</h5>
-            <p>Nous avons également identifié un problème dans le pipeline : la fonction chargée d'éliminer la
-                végétation parasite rejetait aussi les zones d'eau de couleur turquoise ou verte, supprimant ainsi les
-                rares détections pertinentes.</p>
+            <h5 class="mt-3">Changement d’approche : détection par traitement d’image</h5>
+            <p>
+                Face à cette limite, nous avons changé de stratégie en développant une solution basée sur le traitement
+                d’image avec OpenCV. L’objectif était de détecter les bouées non pas via un modèle entraîné, mais en
+                exploitant leurs caractéristiques visuelles : leur couleur vive (rouge/orange) et leur présence dans
+                l’eau.
+            </p>
+            <p>
+                Pour cela, nous avons mis en place un pipeline utilisant l’espace colorimétrique HSV afin d’isoler les
+                teintes rouges, combiné à un masque de segmentation de l’eau obtenu par seuillage automatique (méthode
+                d’Otsu). L’intersection de ces deux masques permet de cibler les zones susceptibles de contenir des
+                bouées.
+            </p>
 
-            <h5 class="mt-3">Entraînement d'un modèle personnalisé</h5>
-            <p>Pour corriger cela, nous avons entraîné un modèle personnalisé sur la plateforme Roboflow, à partir d'un
-                dataset de plus de 10 000 images annotées représentant des bateaux à moteur, voiliers, kayaks et bouées
-                en milieu maritime. Après 10 heures d'entraînement, le modèle YOLOv11 obtenu affiche des performances
-                satisfaisantes : <strong>83,4 % de mAP</strong>, <strong>87,5 % de précision</strong> et <strong>76,5 %
-                    de rappel</strong>.</p>
+            <h5 class="mt-3">Difficultés rencontrées</h5>
+            <p>
+                Malgré des résultats encourageants, cette approche présente plusieurs limites. D’une part, le masque de
+                l’eau basé sur la luminosité n’est pas totalement fiable : certaines zones terrestres (rochers, sable)
+                peuvent être interprétées comme de l’eau, ce qui génère des faux positifs. D’autre part, les conditions
+                de prise de vue (luminosité, turbidité de l’eau, variations de couleur) influencent fortement la
+                détection des bouées.
+            </p>
+            <p>
+                Par ailleurs, les bouées étant très petites dans l’image, il est nécessaire d’utiliser un seuil de
+                détection très bas pour les contours, ce qui augmente mécaniquement la détection de bruit. Il en résulte
+                un compromis délicat entre sensibilité (détecter un maximum de bouées) et précision (éviter les
+                erreurs).
+            </p>
 
-            <h5 class="mt-3">Verrou actuel — déploiement du modèle</h5>
-            <p>Cependant, l'intégration de ce modèle dans notre application s'est heurtée à un blocage : le déploiement
-                via Roboflow nécessite un abonnement payant pour accéder au fichier de poids entraîné
-                (<code>best.pt</code>). Sans ce fichier, il nous est impossible de faire tourner notre modèle en local
-                dans l'application Flask. Ce point constitue le principal verrou actuel du projet.</p>
+            <h5 class="mt-3">Résultats actuels</h5>
+            <p>
+                La solution actuelle permet de détecter une majorité des bouées présentes dans l’image (environ 4 sur
+                6),
+                ce qui constitue une amélioration significative par rapport à l’absence totale de détection initiale.
+                Cependant, des faux positifs persistent, notamment dans les zones terrestres ou bruitées.
+            </p>
+
+            <h5 class="mt-3">Verrou actuel — robustesse de la détection</h5>
+            <p>
+                Le principal verrou actuel réside dans la robustesse de l’algorithme. La méthode repose sur des seuils
+                fixes et des hypothèses visuelles qui ne s’adaptent pas parfaitement à toutes les images. Une solution
+                plus fiable nécessiterait soit un modèle d’intelligence artificielle entraîné spécifiquement, soit une
+                amélioration du pipeline avec des critères supplémentaires (forme, contexte spatial, analyse
+                multi-images).
+            </p>
+
+            <h5 class="mt-3">Limite technique — modèle personnalisé</h5>
+            <p>
+                Nous avons envisagé l’entraînement d’un modèle personnalisé via Roboflow, avec des résultats prometteurs
+                (83,4 % de mAP). Cependant, l’accès au modèle entraîné (<code>best.pt</code>) nécessite un abonnement
+                payant, ce qui empêche son intégration actuelle dans l’application Flask. Ce point constitue une limite
+                technique importante pour la suite du projet.
+            </p>
 
         </div>
     </div>
